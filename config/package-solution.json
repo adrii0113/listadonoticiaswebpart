@@ -1,0 +1,40 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json",
+  "solution": {
+    "name": "listadonoticias-client-side-solution",
+    "id": "57e53121-996b-424e-9e10-7b20e0cf6652",
+    "version": "1.0.0.0",
+    "includeClientSideAssets": true,
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false,
+    "developer": {
+      "name": "",
+      "websiteUrl": "",
+      "privacyUrl": "",
+      "termsOfUseUrl": "",
+      "mpnId": "Undefined-1.17.4"
+    },
+    "metadata": {
+      "shortDescription": {
+        "default": "listadonoticias description"
+      },
+      "longDescription": {
+        "default": "listadonoticias description"
+      },
+      "screenshotPaths": [],
+      "videoUrl": "",
+      "categories": []
+    },
+    "features": [
+      {
+        "title": "listadonoticias Feature",
+        "description": "The feature that activates elements of the listadonoticias solution.",
+        "id": "b540da72-894e-45d2-95f5-8ffd719d8c7a",
+        "version": "1.0.0.0"
+      }
+    ]
+  },
+  "paths": {
+    "zippedPackage": "solution/listadonoticias.sppkg"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "@microsoft/generator-sharepoint": {
+    "plusBeta": false,
+    "isCreatingSolution": true,
+    "nodeVersion": "16.18.1",
+    "sdksVersions": {
+      "@microsoft/microsoft-graph-client": "3.0.2",
+      "@microsoft/teams-js": "2.9.1"
+    },
+    "version": "1.17.4",
+    "libraryName": "listadonoticias",
+    "libraryId": "57e53121-996b-424e-9e10-7b20e0cf6652",
+    "environment": "spo",
+    "packageManager": "npm",
+    "solutionName": "listadonoticias",
+    "solutionShortDescription": "listadonoticias description",
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false,
+    "componentType": "webpart"
+  }
+}
