@@ -8,3 +8,14 @@ export interface INewslist {
     imagen: URL;
 }
 
+
+
+// test list interfaces
+export interface ISPLists {
+    value: ISPList[];
+  }
+  
+  export interface ISPList {
+    Title: string;
+    Id: string;
+  }

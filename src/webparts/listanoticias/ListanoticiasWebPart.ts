@@ -5,17 +5,33 @@ import { BaseClientSideWebPart } from '@microsoft/sp-webpart-base';
 
 import styles from './components/Listanoticias.module.scss'
 
+import {ISPLists} from './../../interfaces'
 
 
+
+import "@pnp/sp/fields";
+import { ILists } from "@pnp/sp/lists";
 import { getSP } from './../../pnpjsConfig';
 
 export interface IListanoticiasWebPartProps {
   description: string;
 }
 
-export default class ListanoticiasWebPart extends BaseClientSideWebPart<IListanoticiasWebPartProps> {
 
+export default class ListanoticiasWebPart extends BaseClientSideWebPart<IListanoticiasWebPartProps> {
+  private async _getListData(): Promise<ISPLists> {
+    const _sp = getSP(this.context);
   
+    
+    const lists: ILists = _sp.web.lists;
+    const data = await lists.select("Title").orderBy("Title")();
+
+    console.log(data)
+
+    return
+    
+    
+  }
 
   public render(): void {
     
@@ -56,6 +72,7 @@ export default class ListanoticiasWebPart extends BaseClientSideWebPart<IListano
     //Initialize our _sp object that we can then use in other packages without having to pass around the context.
     // Check out pnpjsConfig.ts for an example of a project setup file.
     getSP(this.context);
+    this._getListData()
   }
 
 
