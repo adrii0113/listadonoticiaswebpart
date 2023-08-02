@@ -5,7 +5,7 @@ import {useState, useEffect } from 'react'
 import { getSP } from "./../../../pnpjsConfig"
 import { IListaNoticias } from "./IListaNoticas"
 import { IListanoticiasProps } from './IListanoticiasProps';
-// import { DetailsList } from '@fluentui/react/lib/DetailsList'; 
+
 import {
   DetailsList,
   SearchBox,
@@ -13,7 +13,9 @@ import {
   IDropdownOption,
 } from "@fluentui/react"
 
+import  TarjetNoticias  from "./TarjetaNoticias"
 
+// import { NewsDisplayType } from './IListanoticiasProps';
 
 const categories :IDropdownOption[] = [
 
@@ -28,6 +30,14 @@ const responables: IDropdownOption[] = [
 
   { key: "Adele Vance", text: "Adele Vance" },
   { key: "Adrian Calleja", text: "Adrian Calleja" }
+]
+
+
+
+const viewOptions: IDropdownOption[] = [
+
+  {key: "card", text: "Card"},
+  {key: "list", text: "List"}
 ]
 
 
@@ -116,9 +126,11 @@ export default function Listanoticias (props: IListanoticiasProps): React.ReactE
   const [filteredNews, setFilteredNews] = useState <IListaNoticias[]>([])
   const [newsCategory, setNewsCategory] = useState <IDropdownOption>()
   const [newsCreator, setNewsCreator] = useState <IDropdownOption>()
-
+  // const [displayType, setDisplayType] = useState <IDropdownOption>()
+  const [display, setDisplay] = useState <string>("")
+  
   useEffect(() => {
-
+    setDisplay('list')
     const getnewsdata = async () => {
 
       
@@ -161,9 +173,26 @@ export default function Listanoticias (props: IListanoticiasProps): React.ReactE
     
   }
 
+  const handleView = (_: unknown,viewOption:IDropdownOption):void => {
+
+    console.log(viewOption)
+    // setDisplayType(viewOption)
+    switch (viewOption.key) {
+      case 'list':
+          setDisplay('list')
+        break;
+      case 'card':
+          setDisplay('card')
+        break;
+      default:
+        break;
+    }
+  }
+
  
   useEffect(() => {
     let filtered = news
+    
     // //if user type any ...
     if (userSearch) {
       
@@ -208,13 +237,45 @@ export default function Listanoticias (props: IListanoticiasProps): React.ReactE
         onChange={handleCreator}
         defaultSelectedKey="Adele Vance"
         // selectedKey={author?.key}
-      />  
+      />
+      <Dropdown
+        placeholder="Selecciona un tipo de vista"
+        label='vista'
+        options={viewOptions}
+        onChange={handleView}
+        defaultSelectedKey="list"
+      />
 
 
       
-      <DetailsList items={filteredNews} ></DetailsList>
-      
+      {/* <DetailsList items={filteredNews} ></DetailsList> */}
 
+      {
+
+        // displayType.key === 'lista' ? <DetailsList items={filteredNews} ></DetailsList> : <TarjetNoticias/>
+
+         ( ()=>{
+
+            switch (display) {
+              case undefined:
+                return <DetailsList items={filteredNews} ></DetailsList>
+                break;
+              case 'list':
+                return <DetailsList items={filteredNews} ></DetailsList>
+                break;
+              case 'card':
+                return <TarjetNoticias/>
+                break;
+              default:<DetailsList items={filteredNews} ></DetailsList>
+                break;
+            }
+
+          }
+          )()
+      }
+
+      
+    {/* <TarjetNoticias/> */}
     </div>
   )
 }
