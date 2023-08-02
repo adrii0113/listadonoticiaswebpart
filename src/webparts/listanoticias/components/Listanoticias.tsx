@@ -264,7 +264,9 @@ export default function Listanoticias (props: IListanoticiasProps): React.ReactE
                 return <DetailsList items={filteredNews} ></DetailsList>
                 break;
               case 'card':
-                return <TarjetNoticias/>
+                return filteredNews.map((news)=>(
+                  <TarjetNoticias key={news.titulo} {...news}/>
+                ))
                 break;
               default:<DetailsList items={filteredNews} ></DetailsList>
                 break;

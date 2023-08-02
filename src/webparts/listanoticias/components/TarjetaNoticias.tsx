@@ -1,6 +1,8 @@
 
 import * as React from "react"
 
+
+import { IListaNoticias } from "./IListaNoticas";
 import {
     Card,
     CardFooter,
@@ -25,7 +27,10 @@ import {
       maxWidth: "100%",
     },
   });
-export default function TarjetaNoticias(){
+export default function TarjetaNoticias(props: IListaNoticias){
+
+
+    const {titulo, descripcion} = props;
     const styles = useStyles();
 
     return(
@@ -35,12 +40,12 @@ export default function TarjetaNoticias(){
           image={
             <img
             //   src={resolveAsset("avatar_elvia.svg")}
-              alt="Elvia Atkins avatar picture"
+              alt={titulo}
             />
           }
           header={
             <Body1>
-              <b>Elvia Atkins</b> mentioned you
+              {descripcion}
             </Body1>
           }
           description={<Caption1>5h ago · About us - Overview</Caption1>}
