@@ -11,11 +11,15 @@ import {
   SearchBox,
   Dropdown,
   IDropdownOption,
+  Stack,
 } from "@fluentui/react"
 
 import  TarjetNoticias  from "./TarjetaNoticias"
 
 // import { NewsDisplayType } from './IListanoticiasProps';
+
+require ('./Listanoticias.module.scss')
+import './Listanoticias.scss'
 
 const categories :IDropdownOption[] = [
 
@@ -97,11 +101,12 @@ const viewOptions: IDropdownOption[] = [
 const getNews = async (listGuid: string): Promise<IListaNoticias[]> =>{
 
 
-    const allItems: IListaNoticias[] = await getSP().web.lists.getById(listGuid).items.select("titulo","descripcion","categoria","fechapublicacion","imagen","responsable/Title").expand("responsable")()
-
+    const allItems: IListaNoticias[] = await getSP().web.lists.getById(listGuid).items.select("Title","ID","titulo","descripcion","categoria","fechapublicacion","imagen","responsable/Title").expand("responsable")()
+    // const allItems: IListaNoticias[] = await getSP().web.lists.getById(listGuid).items.select("titulo,odata.etag")()
+    console.log(allItems)
   //  console.log(allItems)
     return allItems.map((noticia) => ({
-      "odata.id": noticia['odata.id'],
+      Title: noticia.Title,
       titulo: noticia.titulo,
       categoria: noticia.categoria,
       descripcion: noticia.descripcion,
@@ -115,7 +120,6 @@ const getNews = async (listGuid: string): Promise<IListaNoticias[]> =>{
     
     
 }
-
 
 
 export default function Listanoticias (props: IListanoticiasProps): React.ReactElement {
@@ -147,9 +151,6 @@ export default function Listanoticias (props: IListanoticiasProps): React.ReactE
     
     
   },[listGuid])
-
-
-
 
 
   // handlers
@@ -197,9 +198,9 @@ export default function Listanoticias (props: IListanoticiasProps): React.ReactE
     if (userSearch) {
       
       
-      filtered = filtered.filter(({titulo, descripcion})=>
+      filtered = filtered.filter(({titulo, descripcion, Title})=>
 
-        [titulo, descripcion].some((value:string) => (value.toLowerCase().includes(userSearch.toLowerCase())))
+        [titulo, descripcion,Title].some((value:string) => (value.toLowerCase().includes(userSearch.toLowerCase())))
 
       )
       
@@ -258,10 +259,10 @@ export default function Listanoticias (props: IListanoticiasProps): React.ReactE
 
             switch (display) {
               case undefined:
-                return <DetailsList items={filteredNews} ></DetailsList>
+                return <Stack tokens={{ childrenGap: 16 }}><DetailsList items={filteredNews} ></DetailsList></Stack>
                 break;
               case 'list':
-                return <DetailsList items={filteredNews} ></DetailsList>
+                return <Stack tokens={{ childrenGap: 16 }}><DetailsList items={filteredNews} ></DetailsList></Stack>
                 break;
               case 'card':
                 return filteredNews.map((news)=>(

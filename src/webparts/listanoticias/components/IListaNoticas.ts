@@ -5,5 +5,8 @@ export interface IListaNoticias {
     fechapublicacion: Date
     imagen: object
     responsable: string
-    "odata.id":string
+    // "odata.id":string
+    // id:number
+    Title: string
+    
   }
