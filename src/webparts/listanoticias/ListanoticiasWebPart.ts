@@ -1,20 +1,20 @@
 import * as React from 'react';
 import * as ReactDom from 'react-dom';
 
-import { BaseClientSideWebPart } from '@microsoft/sp-webpart-base';
+import { BaseClientSideWebPart} from '@microsoft/sp-webpart-base';
 
 // import styles from './components/Listanoticias.module.scss'
 
 import {ISPLists} from './../../interfaces'
 
 
-// import { sp } from "@pnp/sp";
+
 import "@pnp/sp/fields";
 // import { ILists } from "@pnp/sp/lists";
 import { getSP } from './../../pnpjsConfig';
 import "@pnp/sp/items/get-all";
 import { IListanoticiasProps, NewsDisplayType } from './components/IListanoticiasProps';
-
+import * as strings from "ListanoticiasWebPartStrings"
 import Listanoticias from './components/Listanoticias'
 import "@pnp/sp";
 import "@pnp/sp/webs";
@@ -26,6 +26,12 @@ export interface IListanoticiasWebPartProps {
   displayType: NewsDisplayType;
 }
 
+// pane config
+import {
+  IPropertyPaneConfiguration,
+  PropertyPaneDropdown,
+  PropertyPaneTextField,
+} from "@microsoft/sp-property-pane"
 
 export default class ListanoticiasWebPart extends BaseClientSideWebPart<IListanoticiasWebPartProps> {
   private _isDarkTheme: boolean = false
@@ -80,7 +86,35 @@ export default class ListanoticiasWebPart extends BaseClientSideWebPart<IListano
   }
  
 
-
+  protected getPropertyPaneConfiguration(): IPropertyPaneConfiguration {
+    return {
+      pages: [
+        {
+          header: {
+            description: strings.PropertyPaneDescription,
+          },
+          groups: [
+            {
+              groupName: strings.BasicGroupName,
+              groupFields: [
+                PropertyPaneTextField("description", {
+                  label: strings.DescriptionFieldLabel,
+                }),
+                PropertyPaneDropdown("displayType", {
+                  label: "Display mode:",
+                  disabled: false,
+                  options: [
+                    { key: NewsDisplayType.list, text: "List" },
+                    { key: NewsDisplayType.card, text: "Card" },
+                  ],
+                }),
+              ],
+            },
+          ],
+        },
+      ],
+    }
+  }
 
   
 }

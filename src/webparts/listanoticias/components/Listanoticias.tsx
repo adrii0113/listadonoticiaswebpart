@@ -5,6 +5,7 @@ import {useState, useEffect } from 'react'
 import { getSP } from "./../../../pnpjsConfig"
 import { IListaNoticias } from "./IListaNoticas"
 import { IListanoticiasProps } from './IListanoticiasProps';
+// import Lista from './Lista'
 
 import {
   DetailsList,
@@ -12,6 +13,7 @@ import {
   Dropdown,
   IDropdownOption,
   Stack,
+  // IColumn
 } from "@fluentui/react"
 
 import  TarjetNoticias  from "./TarjetaNoticias"
@@ -26,6 +28,7 @@ const categories :IDropdownOption[] = [
   {key: "Empleo", text: "Empleo"},
   {key: "Tecnologia", text: "Tecnologia"},
   {key: "Salud", text: "Salud"},
+  {key:"All", text:"Todos"}
 
 
 ]
@@ -33,7 +36,8 @@ const categories :IDropdownOption[] = [
 const responables: IDropdownOption[] = [
 
   { key: "Adele Vance", text: "Adele Vance" },
-  { key: "Adrian Calleja", text: "Adrian Calleja" }
+  { key: "Adrian Calleja", text: "Adrian Calleja" },
+  { key: "All", text: "todos"}
 ]
 
 
@@ -47,7 +51,7 @@ const viewOptions: IDropdownOption[] = [
 
 
 
-// const detaiListColumns = [
+// const detaiListColumns: IColumn[] = [
 
 //   {
 //     key:"titulo",
@@ -86,12 +90,7 @@ const viewOptions: IDropdownOption[] = [
 //     fieldName:"imagen",
 //     minWidth: 50,
 //   },
-//   {
-//     key:"odata.id",
-//     name:"odata.id",
-//     fieldName:"odata.id",
-//     minWidth: 50,
-//   },
+  
  
 
 
@@ -101,18 +100,18 @@ const viewOptions: IDropdownOption[] = [
 const getNews = async (listGuid: string): Promise<IListaNoticias[]> =>{
 
 
-    const allItems: IListaNoticias[] = await getSP().web.lists.getById(listGuid).items.select("Title","ID","titulo","descripcion","categoria","fechapublicacion","imagen","responsable/Title").expand("responsable")()
+    const allItems: IListaNoticias[] = await getSP().web.lists.getById(listGuid).items.select("Title","descripcion","categoria","fechapublicacion","imagen","responsable/Title").expand("responsable")()
     // const allItems: IListaNoticias[] = await getSP().web.lists.getById(listGuid).items.select("titulo,odata.etag")()
-    console.log(allItems)
+    // console.log(allItems)
   //  console.log(allItems)
     return allItems.map((noticia) => ({
       Title: noticia.Title,
-      titulo: noticia.titulo,
       categoria: noticia.categoria,
       descripcion: noticia.descripcion,
       fechapublicacion: noticia.fechapublicacion,
-      responsable: noticia.responsable,
-      imagen: noticia.imagen,
+      responsable:(noticia.responsable as any).Title,
+      imagen: (noticia.imagen as any).Url,
+      // titulo: noticia.titulo,
     }))
 
     return allItems
@@ -138,20 +137,31 @@ export default function Listanoticias (props: IListanoticiasProps): React.ReactE
     const getnewsdata = async () => {
 
       
-      getNews(listGuid).then((news) =>{console.log(news)})
+      getNews(listGuid).then((news) =>{console.log(news)}).catch((error) =>console.log(error))
       getNews(listGuid)
         .then(
           (news)=>{
             setNews(news)
             setFilteredNews(news)
           }
-        )
+        ).catch((error) => console.log(error))
     }
-    getnewsdata()
-    
-    
+
+
+    getnewsdata().catch((error)=>console.log(error))
+
+    return () => {
+      console.log('ComponenteHijo se va a desmontar.');
+    };
+
   },[listGuid])
 
+
+
+  // test function
+  // useEffect(() => {
+    
+  // },[displayType])
 
   // handlers
 
@@ -177,15 +187,18 @@ export default function Listanoticias (props: IListanoticiasProps): React.ReactE
   const handleView = (_: unknown,viewOption:IDropdownOption):void => {
 
     console.log(viewOption)
-    // setDisplayType(viewOption)
+    // console.log(display)
+    // setDisplayType(viewOption)d
     switch (viewOption.key) {
-      case 'list':
+      case 'list': 
+          setFilteredNews(news)
           setDisplay('list')
         break;
       case 'card':
           setDisplay('card')
         break;
       default:
+        setDisplay('list')
         break;
     }
   }
@@ -194,31 +207,41 @@ export default function Listanoticias (props: IListanoticiasProps): React.ReactE
   useEffect(() => {
     let filtered = news
     
-    // //if user type any ...
+    // en funcion del valor que el usuario escriba en la busqueda, busca una coincidencia comparando con la descripcion y el titulos de todos los objetos
     if (userSearch) {
       
       
-      filtered = filtered.filter(({titulo, descripcion, Title})=>
+      filtered = filtered.filter(({ descripcion, Title})=>
 
-        [titulo, descripcion,Title].some((value:string) => (value.toLowerCase().includes(userSearch.toLowerCase())))
+        [descripcion,Title].some((value:string) => (value.toLowerCase().includes(userSearch.toLowerCase())))
 
       )
       
     } else {console.log("user searhc empty")}
 
-    if (newsCategory?.key) {
+
+
+    // filtra los datos en funcion del valor del seleccionable siempre y cuando no sea la opcion de mostrar todos
+    if (newsCategory?.key && newsCategory?.key !== 'All') {
+
+      
       filtered = filtered.filter((news) => news.categoria === newsCategory.key)
     }
 
-    if (newsCreator?.key) {
+    
+    // filtra los datos en funcion del valor del seleccionable siempre y cuando no sea la opcion de mostrar todos
+    if (newsCreator?.key && newsCreator?.key !== 'All') {
       filtered = filtered.filter((news) => news.responsable === newsCreator.key)
     }
 
+
+    
     setFilteredNews(filtered)
 
+   
 
     //si cambia el valor del estado tanto de la busqueda por texto como del filtro de las categorias se vuleve a ejecutar la funcion
-  },[userSearch, newsCategory?.key])
+  },[userSearch, newsCategory?.key, newsCreator?.key])
   
   return(
     <div className='listaNoticiasContainer'>
@@ -248,6 +271,8 @@ export default function Listanoticias (props: IListanoticiasProps): React.ReactE
       />
 
 
+      <div className="content-container">
+
       
       {/* <DetailsList items={filteredNews} ></DetailsList> */}
 
@@ -258,20 +283,44 @@ export default function Listanoticias (props: IListanoticiasProps): React.ReactE
          ( ()=>{
 
             switch (display) {
+
+              case 'card':
+                return filteredNews.map((news)=>(
+                  <TarjetNoticias key={news.Title} {...news}/>
+                ))
+                break;
               case undefined:
                 return <Stack tokens={{ childrenGap: 16 }}><DetailsList items={filteredNews} ></DetailsList></Stack>
                 break;
               case 'list':
-                return <Stack tokens={{ childrenGap: 16 }}><DetailsList items={filteredNews} ></DetailsList></Stack>
+                console.log(filteredNews)
+                
+                return <DetailsList setKey='set' items={filteredNews}></DetailsList>
                 break;
-              case 'card':
-                return filteredNews.map((news)=>(
-                  <TarjetNoticias key={news.titulo} {...news}/>
-                ))
-                break;
-              default:<DetailsList items={filteredNews} ></DetailsList>
+              
+              default:<DetailsList setKey='set' items={filteredNews} ></DetailsList>
                 break;
             }
+
+            // let newsReinitialized: IListaNoticias[] = filteredNews;
+
+            // switch (displayType) {
+            //   case NewsDisplayType.list:
+            //       console.log(filteredNews)
+            //       return <DetailsList items={newsReinitialized} children={filteredNews} />
+            //       break
+                  
+                
+                
+            //   case NewsDisplayType.card:
+            //     return <Stack tokens={{ childrenGap: 16 }}>
+            //     {filteredNews.map((newss) => (
+            //       <TarjetNoticias key={newss.Title} {...newss} />
+            //     ))}
+            //   </Stack>
+            //   default:
+            //     return
+            // }
 
           }
           )()
@@ -279,6 +328,7 @@ export default function Listanoticias (props: IListanoticiasProps): React.ReactE
 
       
     {/* <TarjetNoticias/> */}
+    </div>
     </div>
   )
 }

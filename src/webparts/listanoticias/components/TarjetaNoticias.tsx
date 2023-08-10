@@ -3,75 +3,134 @@ import * as React from "react"
 
 
 import { IListaNoticias } from "./IListaNoticas";
-import {
-    Card,
-    CardFooter,
-    CardHeader,
-    CardPreview,
-  } from "@fluentui/react-components";
+// import { Link } from 'react-router-dom';
+require ('./TarjetaNoticias.module.scss')
+// import './TarjetaNoticias.scss'
 
   import {
     makeStyles,
-    Body1,
-    Caption1,
-    Button,
     shorthands,
+    Button,
+    Caption1,
+    Body1,
+    // Subtitle1,
   } from "@fluentui/react-components";
 
-  import { ArrowReplyRegular, ShareRegular } from "@fluentui/react-icons";
+  import {
+    MoreHorizontal20Filled,
+    Open16Regular,
+    Share16Regular,
+  } from "@fluentui/react-icons";
+  import {
+    Card,
+    CardHeader,
+    CardFooter,
+    CardPreview,
+    // CardProps,
+  } from "@fluentui/react-components";
+
+  // import { ArrowReplyRegular, ShareRegular } from "@fluentui/react-icons";
 
   const useStyles = makeStyles({
-    card: {
-      ...shorthands.margin("auto"),
-      width: "720px",
-      maxWidth: "100%",
+    // main: {
+    //   display: "flex",
+    //   flexWrap: "wrap",
+    //   // flexDirection: "column",
+    //   columnGap: "16px",
+    //   rowGap: "36px",
+    //   backgroundColor: "rgba(255, 255, 255, 0)"
+    // },
+  
+    title: {
+      ...shorthands.margin(0, 0, "12px"),
     },
+  
+    description: {
+      ...shorthands.margin(0, 0, "12px"),
+    },
+  
+    card: {
+      width: "300px",
+      maxWidth: "100%",
+      // height: "fit-content",
+      marginTop:"2px"
+      
+    },
+  
+    text: {
+      ...shorthands.margin(0),
+    },
+    img:{
+
+
+
+    }
   });
+
+  
+  // const resolveAsset = (asset: string) => {
+  //   const ASSET_URL =
+  //     "https://raw.githubusercontent.com/microsoft/fluentui/master/packages/react-components/react-card/stories/assets/";
+  
+  //   return `${ASSET_URL}${asset}`;
+  // };
+  
+  
 export default function TarjetaNoticias(props: IListaNoticias){
 
+  // const styles = useStyles();
 
-    const {titulo, descripcion} = props;
-    const styles = useStyles();
+    const {Title, descripcion, imagen} = props;
+    // const newImageObj: any = imagen;
 
-    return(
-
+    
+      const styles = useStyles();
+    
+      return (
+        <main className="main-container">
         <Card className={styles.card}>
-        <CardHeader
-          image={
+          <CardPreview>
             <img
-            //   src={resolveAsset("avatar_elvia.svg")}
-              alt={titulo}
+              src={imagen.toString()}
+              alt="Sales Presentation Preview"
             />
-          }
-          header={
-            <Body1>
-              {descripcion}
-            </Body1>
-          }
-          description={<Caption1>5h ago · About us - Overview</Caption1>}
-        />
-  
-        <CardPreview
-          logo={
-            <img
-            //   src={resolveAsset("word_logo.svg")}
-              alt="Microsoft Word document"
-            />
-          }
-        >
-          <img
-            // src={resolveAsset("doc_template.png")}
-            alt="Preview of a Word document: About Us - Overview"
+          </CardPreview>
+    
+          <CardHeader
+            
+            header={
+              <Body1>
+                <b>{Title}</b>
+              </Body1>
+            }
+            description={<Caption1></Caption1>}
+            action={
+              <Button
+                appearance="transparent"
+                icon={<MoreHorizontal20Filled />}
+                aria-label="More options"
+              />
+            }
           />
-        </CardPreview>
-  
-        <CardFooter>
-          <Button icon={<ArrowReplyRegular fontSize={16} />}>Reply</Button>
-          <Button icon={<ShareRegular fontSize={16} />}>Share</Button>
-        </CardFooter>
-      </Card>
+    
+          <p className={styles.text}>
+            {descripcion}
+          </p>
+    
+          <CardFooter>
+            <a href={(imagen as any).Url}>
+              <Button appearance="primary" icon={<Open16Regular />}>
+                Open
+              </Button>
+            </a>
+            <Button icon={<Share16Regular />}>Share</Button>
+          </CardFooter>
+        </Card>
+        </main>
+    
+      )
 
-    )
+    
 
 
 
