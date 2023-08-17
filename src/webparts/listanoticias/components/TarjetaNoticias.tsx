@@ -5,7 +5,7 @@ import * as React from "react"
 import { IListaNoticias } from "./IListaNoticas";
 // import { Link } from 'react-router-dom';
 require ('./TarjetaNoticias.module.scss')
-// import './TarjetaNoticias.scss'
+import './TarjetaNoticias.scss'
 
   import {
     makeStyles,

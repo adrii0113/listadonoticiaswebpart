@@ -5,6 +5,7 @@ import {useState, useEffect } from 'react'
 import { getSP } from "./../../../pnpjsConfig"
 import { IListaNoticias } from "./IListaNoticas"
 import { IListanoticiasProps } from './IListanoticiasProps';
+import { Field } from "@fluentui/react-components";
 // import Lista from './Lista'
 
 import {
@@ -16,9 +17,21 @@ import {
   // IColumn
 } from "@fluentui/react"
 
+
+import {
+  // DetailsListLayoutMode,
+  // initializeIcons,
+  // Sticky,
+  // StickyPositionType,
+  ConstrainMode,
+  // ScrollablePane,
+  // ScrollbarVisibility,
+  
+} from "office-ui-fabric-react";
+
 import  TarjetNoticias  from "./TarjetaNoticias"
 
-// import { NewsDisplayType } from './IListanoticiasProps';
+import { Vista } from './IListanoticiasProps';
 
 require ('./Listanoticias.module.scss')
 import './Listanoticias.scss'
@@ -29,7 +42,6 @@ const categories :IDropdownOption[] = [
   {key: "Tecnologia", text: "Tecnologia"},
   {key: "Salud", text: "Salud"},
   {key:"All", text:"Todos"}
-
 
 ]
 
@@ -49,53 +61,6 @@ const viewOptions: IDropdownOption[] = [
 ]
 
 
-
-
-// const detaiListColumns: IColumn[] = [
-
-//   {
-//     key:"titulo",
-//     name:"Titulo",
-//     fieldName:"titulo",
-//     minWidth: 50,
-//   },
-
-//   {
-//     key:"categoria",
-//     name:"Categoría",
-//     fieldName:"categoria",
-//     minWidth: 50,
-//   },
-//   {
-//     key:"descripcion",
-//     name:"Descripción",
-//     fieldName:"descripcion",
-//     minWidth: 50,
-//   },
-//   {
-//     key:"fechapublicacion",
-//     name:"fechapublicacion",
-//     fieldName:"fechapublicacion",
-//     minWidth: 50,
-//   },
-//   {
-//     key:"responsable",
-//     name:"responsable",
-//     fieldName:"responsable",
-//     minWidth: 50,
-//   },
-//   {
-//     key:"imagen",
-//     name:"imagen",
-//     fieldName:"imagen",
-//     minWidth: 50,
-//   },
-  
- 
-
-
-
-// ]
 
 const getNews = async (listGuid: string): Promise<IListaNoticias[]> =>{
 
@@ -122,7 +87,7 @@ const getNews = async (listGuid: string): Promise<IListaNoticias[]> =>{
 
 
 export default function Listanoticias (props: IListanoticiasProps): React.ReactElement {
-  const { listGuid } = props
+  const { listGuid, tipoVista = Vista.list } = props
   const [news, setNews] = useState <IListaNoticias[]>([])
 
   const [userSearch, setUserSearch] = useState <string>("")
@@ -130,10 +95,10 @@ export default function Listanoticias (props: IListanoticiasProps): React.ReactE
   const [newsCategory, setNewsCategory] = useState <IDropdownOption>()
   const [newsCreator, setNewsCreator] = useState <IDropdownOption>()
   // const [displayType, setDisplayType] = useState <IDropdownOption>()
-  const [display, setDisplay] = useState <string>("")
+  // const [display, setDisplay] = useState <string>("")
   
   useEffect(() => {
-    setDisplay('list')
+    // setDisplay('list')
     const getnewsdata = async () => {
 
       
@@ -150,20 +115,12 @@ export default function Listanoticias (props: IListanoticiasProps): React.ReactE
 
     getnewsdata().catch((error)=>console.log(error))
 
-    return () => {
-      console.log('ComponenteHijo se va a desmontar.');
-    };
+   
 
   },[listGuid])
 
 
 
-  // test function
-  // useEffect(() => {
-    
-  // },[displayType])
-
-  // handlers
 
   const handleCategory = (_: unknown,value:IDropdownOption) => {
 
@@ -184,27 +141,28 @@ export default function Listanoticias (props: IListanoticiasProps): React.ReactE
     
   }
 
-  const handleView = (_: unknown,viewOption:IDropdownOption):void => {
+  // const handleView = (_: unknown,viewOption:IDropdownOption):void => {
 
-    console.log(viewOption)
-    // console.log(display)
-    // setDisplayType(viewOption)d
-    switch (viewOption.key) {
-      case 'list': 
-          setFilteredNews(news)
-          setDisplay('list')
-        break;
-      case 'card':
-          setDisplay('card')
-        break;
-      default:
-        setDisplay('list')
-        break;
-    }
-  }
+  //   console.log(viewOption)
+  //   // console.log(display)
+  //   // setDisplayType(viewOption)d
+  //   switch (viewOption.key) {
+  //     case 'list': 
+  //         setFilteredNews(news)
+  //         setDisplay('list')
+  //       break;
+  //     case 'card':
+  //         setDisplay('card')
+  //       break;
+  //     default:
+  //       setDisplay('list')
+  //       break;
+  //   }
+  // }
 
  
   useEffect(() => {
+    console.log(tipoVista)
     let filtered = news
     
     // en funcion del valor que el usuario escriba en la busqueda, busca una coincidencia comparando con la descripcion y el titulos de todos los objetos
@@ -235,7 +193,7 @@ export default function Listanoticias (props: IListanoticiasProps): React.ReactE
     }
 
 
-    
+
     setFilteredNews(filtered)
 
    
@@ -245,7 +203,9 @@ export default function Listanoticias (props: IListanoticiasProps): React.ReactE
   
   return(
     <div className='listaNoticiasContainer'>
-      <SearchBox value={userSearch} onChange={(value) => storeUserSearches(value.target.value)} />
+      <Field label="Campo de busqueda">
+        <SearchBox placeholder='Ejemplo de busqueda' value={userSearch} onChange={(value) => storeUserSearches(value.target.value)} />
+      </Field >
       <Dropdown
         placeholder="Seleccione una categoría"
         label="Categoría"
@@ -266,7 +226,7 @@ export default function Listanoticias (props: IListanoticiasProps): React.ReactE
         placeholder="Selecciona un tipo de vista"
         label='vista'
         options={viewOptions}
-        onChange={handleView}
+        // onChange={handleView}
         defaultSelectedKey="list"
       />
 
@@ -280,47 +240,55 @@ export default function Listanoticias (props: IListanoticiasProps): React.ReactE
 
         // displayType.key === 'lista' ? <DetailsList items={filteredNews} ></DetailsList> : <TarjetNoticias/>
 
+                  
          ( ()=>{
 
-            switch (display) {
+            // switch (display) {
 
-              case 'card':
-                return filteredNews.map((news)=>(
-                  <TarjetNoticias key={news.Title} {...news}/>
-                ))
-                break;
-              case undefined:
-                return <Stack tokens={{ childrenGap: 16 }}><DetailsList items={filteredNews} ></DetailsList></Stack>
-                break;
-              case 'list':
-                console.log(filteredNews)
+            //   case 'card':
+            //     return filteredNews.map((news)=>(
+            //       <TarjetNoticias key={news.Title} {...news}/>
+            //     ))
+            //     break;
+            //   case undefined:
+            //     return <Stack tokens={{ childrenGap: 16 }}><DetailsList items={filteredNews} ></DetailsList></Stack>
+            //     break;
+            //   case 'list':
+            //     console.log(filteredNews)
                 
-                return <DetailsList setKey='set' items={filteredNews}></DetailsList>
-                break;
+            //     return <DetailsList setKey='set' items={filteredNews}></DetailsList>
+            //     break;
               
-              default:<DetailsList setKey='set' items={filteredNews} ></DetailsList>
-                break;
-            }
+            //   default:<DetailsList setKey='set' items={filteredNews} ></DetailsList>
+            //     break;
+            // }
 
             // let newsReinitialized: IListaNoticias[] = filteredNews;
 
-            // switch (displayType) {
-            //   case NewsDisplayType.list:
-            //       console.log(filteredNews)
-            //       return <DetailsList items={newsReinitialized} children={filteredNews} />
-            //       break
+            switch (tipoVista) {
+              case Vista.list:
+                  // console.log(filteredNews)
+                  return (
+                    <div>
+                    
+                  <DetailsList constrainMode={ConstrainMode.unconstrained} items={filteredNews}  />
+                    
                   
-                
-                
-            //   case NewsDisplayType.card:
-            //     return <Stack tokens={{ childrenGap: 16 }}>
-            //     {filteredNews.map((newss) => (
-            //       <TarjetNoticias key={newss.Title} {...newss} />
-            //     ))}
-            //   </Stack>
-            //   default:
-            //     return
-            // }
+                  </div>
+                  
+                  )
+                  
+              case Vista.card:
+                return (
+                <Stack tokens={{ childrenGap: 16 }}>
+                {filteredNews.map((newss) => (
+                  <TarjetNoticias key={newss.Title} {...newss} />
+                ))}
+              </Stack>)
+              
+              default:
+                return
+            }
 
           }
           )()
@@ -329,6 +297,7 @@ export default function Listanoticias (props: IListanoticiasProps): React.ReactE
       
     {/* <TarjetNoticias/> */}
     </div>
+    
     </div>
   )
 }

@@ -1,4 +1,4 @@
-export enum NewsDisplayType {
+export enum Vista {
   list,
   card
 }
@@ -9,6 +9,6 @@ export interface IListanoticiasProps {
     environmentMessage: string;
     hasTeamsContext: boolean;
     listGuid: string;
-    displayType: NewsDisplayType
+    tipoVista: Vista
   
 }

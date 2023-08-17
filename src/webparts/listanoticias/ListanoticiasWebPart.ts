@@ -13,7 +13,7 @@ import "@pnp/sp/fields";
 // import { ILists } from "@pnp/sp/lists";
 import { getSP } from './../../pnpjsConfig';
 import "@pnp/sp/items/get-all";
-import { IListanoticiasProps, NewsDisplayType } from './components/IListanoticiasProps';
+import { IListanoticiasProps, Vista } from './components/IListanoticiasProps';
 import * as strings from "ListanoticiasWebPartStrings"
 import Listanoticias from './components/Listanoticias'
 import "@pnp/sp";
@@ -23,7 +23,7 @@ import "@pnp/sp/webs";
 
 export interface IListanoticiasWebPartProps {
   description: string;
-  displayType: NewsDisplayType;
+  tipoVista: Vista;
 }
 
 // pane config
@@ -36,6 +36,7 @@ import {
 export default class ListanoticiasWebPart extends BaseClientSideWebPart<IListanoticiasWebPartProps> {
   private _isDarkTheme: boolean = false
   private _environmentMessage: string = ""
+
   private async _getListData(): Promise<ISPLists> {
     // const _sp = getSP(this.context);
     
@@ -57,7 +58,8 @@ export default class ListanoticiasWebPart extends BaseClientSideWebPart<IListano
   }
 
   public render(): void {
-    const { description, displayType = NewsDisplayType.list } = this.properties
+    const { description, tipoVista = Vista.list } = this.properties
+    // console.log(tipoVista)
     const element: React.ReactElement<IListanoticiasProps> = React.createElement(
       Listanoticias,
     
@@ -68,7 +70,7 @@ export default class ListanoticiasWebPart extends BaseClientSideWebPart<IListano
       hasTeamsContext: !!this.context.sdks.microsoftTeams,
       listGuid: "fd1def9c-5a81-460b-aae2-1cd9aa067b52",
       description,
-      displayType,
+      tipoVista,
     }
     )
     ReactDom.render(element, this.domElement) 
@@ -81,7 +83,7 @@ export default class ListanoticiasWebPart extends BaseClientSideWebPart<IListano
   
     this._environmentMessage = ""
     getSP(this.context)
-    this._getListData()
+    await this._getListData()
     return super.onInit()
   }
  
@@ -100,13 +102,13 @@ export default class ListanoticiasWebPart extends BaseClientSideWebPart<IListano
                 PropertyPaneTextField("description", {
                   label: strings.DescriptionFieldLabel,
                 }),
-                PropertyPaneDropdown("displayType", {
+                PropertyPaneDropdown("tipoVista", {
                   label: "Display mode:",
                   disabled: false,
                   options: [
-                    { key: NewsDisplayType.list, text: "List" },
-                    { key: NewsDisplayType.card, text: "Card" },
-                  ],
+                    { key: Vista.list, text: "Lista" },
+                    { key: Vista.card, text: "Tarjeta" },
+                  ],selectedKey: Vista.list,
                 }),
               ],
             },

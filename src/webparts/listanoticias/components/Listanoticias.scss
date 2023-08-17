@@ -21,8 +21,10 @@
 
 .content-container{
     display: flex;
-    // flex-wrap: wrap;
-    flex-direction: column;
+
+    flex-wrap: wrap;
+    // flex-direction: column;
     // column-gap: 16px;
     // row-gap: 36p
+
   }
